@@ -23,4 +23,9 @@ interface ApiService {
         @Query("spamConfidenceLevel") spamConfidenceLevel: String = "HIGH",
         @Query("pageSize") pageSize: Int = 100,
         ): Response<JsonObject>
+
+    @GET("getContractMetadata")
+    suspend fun getContractMetadata(
+        @Query("contractAddress") contractAddress: String,
+    ): Response<JsonObject>
 }

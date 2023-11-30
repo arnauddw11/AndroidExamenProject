@@ -12,7 +12,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.androidexamenproject.ui.viewModel.AlchemyViewModel
-import com.example.androidexamenproject.ui.viewModel.NftCollectionList
 
 
 @OptIn(ExperimentalMaterial3Api::class)

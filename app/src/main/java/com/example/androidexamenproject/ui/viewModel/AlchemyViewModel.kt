@@ -1,5 +1,6 @@
 package com.example.androidexamenproject.ui.viewModel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -10,11 +11,13 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.androidexamenproject.NFTApplication
 import com.example.androidexamenproject.data.AlchemyRepository
 import com.example.androidexamenproject.model.NFTCollection
+import com.example.androidexamenproject.model.NFTCollectionMetaData
 import com.example.androidexamenproject.model.NFTContract
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 import java.io.IOException
 import java.net.Inet4Address
 
@@ -25,6 +28,8 @@ class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewM
     private val _nftsForOwner = mutableStateOf<List<NFTContract>?>(null)
     val nftsForOwner: State<List<NFTContract>?> get() = _nftsForOwner
 
+    private val _contractMetadata = mutableStateOf<NFTCollectionMetaData?>(null)
+    val contractMetadata: State<NFTCollectionMetaData?> get() = _contractMetadata
     fun getCollectionForOwner(address: String) {
         viewModelScope.launch {
             try {
@@ -43,6 +48,27 @@ class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewM
         }
     }
 
+    fun getContractMetadata(contractAddress: String, callback: (NFTCollectionMetaData?) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val response = alchemyRepository.getContractMetadata(contractAddress)
+                if (response.isSuccessful) {
+                    val contractMetaData = response.body()?.jsonObject
+                    Log.d("ViewModel", "Contract Metadata: $contractMetaData")
+                    val nftContractMetaData = Gson().fromJson<NFTCollectionMetaData>(
+                        contractMetaData.toString(),
+                        object : TypeToken<NFTCollectionMetaData>() {}.type
+                    )
+                    _contractMetadata.value = nftContractMetaData
+                    callback(nftContractMetaData)
+                    //Log.d("ViewModel", "Contract Metadata Updated: ${_contractMetadata.value.toString()}")
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun getNftsForOwner(owner: String, contractAddress: String) {
         viewModelScope.launch {
             try {
@@ -54,6 +80,7 @@ class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewM
                         object : TypeToken<List<NFTContract>>() {}.type
                     )
                     _nftsForOwner.value = nftContractsForOwner
+
                 }
             } catch (e: IOException) {
                 e.printStackTrace()

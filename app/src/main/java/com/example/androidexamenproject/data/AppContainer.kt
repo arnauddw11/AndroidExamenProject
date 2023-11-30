@@ -15,18 +15,20 @@ interface AppContainer {
 
 class DefaultAppContainer : AppContainer {
 
-    private val BASE_URL = "https://eth-mainnet.g.alchemy.com/nft/v3/"
+    private val BASE_URL = "https://eth-mainnet.g.alchemy.com/nft/v3/1ImBO3FQkmn5rDP3Z1LqzTP8SoC7NhOK/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
+
+    /*
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor) // Add the logging interceptor
         .build()
-
+    */
     private val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-        .client(okHttpClient)
+        //.client(okHttpClient)
         .baseUrl(BASE_URL)
         .build()
 
