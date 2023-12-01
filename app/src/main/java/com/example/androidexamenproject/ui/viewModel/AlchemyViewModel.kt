@@ -12,22 +12,21 @@ import com.example.androidexamenproject.NFTApplication
 import com.example.androidexamenproject.data.AlchemyRepository
 import com.example.androidexamenproject.model.NFTCollection
 import com.example.androidexamenproject.model.NFTCollectionMetaData
-import com.example.androidexamenproject.model.NFTContract
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import java.io.IOException
-import java.net.Inet4Address
 
 class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewModel() {
     private val _collectionsForOwner = mutableStateOf<List<NFTCollection>?>(null)
     val collectionsForOwner: State<List<NFTCollection>?> get() = _collectionsForOwner
 
+    /*
     private val _nftsForOwner = mutableStateOf<List<NFTContract>?>(null)
     val nftsForOwner: State<List<NFTContract>?> get() = _nftsForOwner
-
+     */
     private val _contractMetadata = mutableStateOf<NFTCollectionMetaData?>(null)
     val contractMetadata: State<NFTCollectionMetaData?> get() = _contractMetadata
     fun getCollectionForOwner(address: String) {
@@ -68,7 +67,7 @@ class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewM
             }
         }
     }
-
+/*
     fun getNftsForOwner(owner: String, contractAddress: String) {
         viewModelScope.launch {
             try {
@@ -87,6 +86,8 @@ class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewM
             }
         }
     }
+
+ */
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

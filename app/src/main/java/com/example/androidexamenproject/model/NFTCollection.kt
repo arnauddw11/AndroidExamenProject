@@ -46,7 +46,7 @@ data class DisplayNft(
 )
 
 @Serializable
-data class Logo(
+data class Image(
     val cachedUrl: String?,
     val thumbnailUrl: String?,
     val pngUrl: String?,

@@ -10,11 +10,11 @@ data class NFTCollectionMetaData (
     val tokenType: String?,
     val contractDeployer: String?,
     val deployedBlockNumber: String?,
-    val openSeaMetadata: OpenseaMetadata?
+    val openSeaMetadata: OpenSeaMetadata?
 
 )
 
-data class OpenseaMetadata (
+data class OpenSeaMetadata (
     val floorprice: Double?,
     val collectionName: String?,
     val safelistRequestStatus: String?,

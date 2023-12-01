@@ -1,7 +1,7 @@
 package com.example.androidexamenproject.model
 
 import kotlinx.serialization.Serializable
-
+/*
 @Serializable
 data class NFTContract(
     val address: String,
@@ -90,3 +90,5 @@ data class OwnedNft(
 data class YourResponse(
     val ownedNfts: List<OwnedNft>
 )
+
+ */

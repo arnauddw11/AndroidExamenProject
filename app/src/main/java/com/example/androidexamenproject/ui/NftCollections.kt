@@ -1,25 +1,29 @@
 package com.example.androidexamenproject.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -30,9 +34,9 @@ import com.example.androidexamenproject.ui.viewModel.AlchemyViewModel
 fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = Modifier, navController: NavController){
     var nftCollectionList: List<NFTCollection> = alchemyViewModel.collectionsForOwner.value ?: emptyList()
 
-    LazyVerticalGrid(
+    LazyColumn(
         modifier = modifier,
-        columns = GridCells.Adaptive(minSize = 128.dp)
+        verticalArrangement = Arrangement.SpaceBetween,
         ) {
         items(nftCollectionList) { nftCollection ->
 
@@ -62,11 +66,7 @@ fun NFTCollectionCard(
             }
         }
     }
-
-
-
     val imageUrl = imageUrls[nftCollection.contract?.address] ?: ""
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,16 +74,19 @@ fun NFTCollectionCard(
             .clickable { },
         shape = RoundedCornerShape(4.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(text = nftCollection.name)
             AsyncImage(
                 model = imageUrl,
-                contentDescription = nftCollection.description
-            )
+                contentDescription = nftCollection.description,
+                modifier = Modifier.size(60.dp)
+                    .clip(RoundedCornerShape(4.dp)
+            ))
         }
     }
 }
