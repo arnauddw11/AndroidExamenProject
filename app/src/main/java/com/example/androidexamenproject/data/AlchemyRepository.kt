@@ -6,13 +6,13 @@ import retrofit2.Response
 
 
 interface AlchemyRepository {
-    suspend fun getCollectionsForOwner(owner: String): Response<JsonObject>
-    suspend fun getNFTsForOwner(owner: String, contractAddress: String): Response<JsonObject>
-    suspend fun getContractMetadata(contractAddress: String): Response<JsonObject>
+    suspend fun getContractsForOwner(owner: String): Response<JsonObject>
+    suspend fun getNFtsForOwner(owner: String, contractAddresses: List<String>): Response<JsonObject>
 }
 
 class NetworkAlchemyRepository(private val alchemyApiService: ApiService) : AlchemyRepository {
-    override suspend fun getCollectionsForOwner(owner: String): Response<JsonObject> = alchemyApiService.getCollectionsForOwner(owner)
-    override suspend fun getNFTsForOwner(owner: String, contractAddress: String): Response<JsonObject> = alchemyApiService.getNFTsForOwner(owner, contractAddress)
-    override suspend fun getContractMetadata(contractAddress: String): Response<JsonObject> = alchemyApiService.getContractMetadata(contractAddress)
+    override suspend fun getContractsForOwner(owner: String): Response<JsonObject> = alchemyApiService.getContractsForOwner(owner)
+    override suspend fun getNFtsForOwner(owner: String, contractAddresses: List<String>): Response<JsonObject> = alchemyApiService.getNFTsForOwner(owner, contractAddresses)
+
 }
+

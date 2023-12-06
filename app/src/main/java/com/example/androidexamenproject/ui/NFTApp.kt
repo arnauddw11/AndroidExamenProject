@@ -47,6 +47,16 @@ fun NFTApp(
                         NftCollectionList(alchemyViewModel = alchemyViewModel, navController = navController)
                     }
                 }
+            composable("nfts") {
+                Box(
+                    modifier = Modifier
+                        .padding(innerPadding),
+                ) {
+                    NFTsPerCollectionList(
+                        alchemyViewModel = alchemyViewModel,
+                        navController = navController
+                    )}
+                }
             }
         }
     }

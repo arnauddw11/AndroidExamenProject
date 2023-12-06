@@ -6,26 +6,23 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
-    @GET("getCollectionsForOwner")
-    suspend fun getCollectionsForOwner(
+
+    @GET("getContractsForOwner")
+    suspend fun getContractsForOwner(
         @Query("owner") owner: String,
-        @Query("pageSize") pageSize: Int = 100,
         @Query("withMetadata") withMetadata: Boolean = true,
         @Query("excludeFilters[]") excludeFilters: String = "SPAM",
+        @Query("spamConfidenceLevel") spamConfidenceLevel: String = "HIGH",
+        @Query("pageSize") pageSize: Int = 100,
     ): Response<JsonObject>
 
     @GET("getNFTsForOwner")
     suspend fun getNFTsForOwner(
         @Query("owner") owner: String,
-        @Query("contractAddresses[]") contractAddress: String,
+        @Query("contractAddresses[]") contractAddresses: List<String>,
         @Query("withMetadata") withMetadata: Boolean = true,
-        @Query("excludeFilters[]") excludeFilters: String = "SPAM",
-        @Query("spamConfidenceLevel") spamConfidenceLevel: String = "HIGH",
-        @Query("pageSize") pageSize: Int = 100,
-        ): Response<JsonObject>
-
-    @GET("getContractMetadata")
-    suspend fun getContractMetadata(
-        @Query("contractAddress") contractAddress: String,
+        //@Query("excludeFilters[]") excludeFilters: String = "SPAM",
+        //@Query("spamConfidenceLevel") spamConfidenceLevel: String = "HIGH",
+        //@Query("pageSize") pageSize: Int = 100,
     ): Response<JsonObject>
 }

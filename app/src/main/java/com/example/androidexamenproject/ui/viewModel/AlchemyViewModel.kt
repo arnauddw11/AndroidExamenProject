@@ -10,76 +10,51 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.androidexamenproject.NFTApplication
 import com.example.androidexamenproject.data.AlchemyRepository
-import com.example.androidexamenproject.model.NFTCollection
-import com.example.androidexamenproject.model.NFTCollectionMetaData
+import com.example.androidexamenproject.model.NFTContract
+import com.example.androidexamenproject.model.NftObject
+import com.example.androidexamenproject.model.OwnedNfts
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json.Default.decodeFromString
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import java.io.IOException
 
 class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewModel() {
-    private val _collectionsForOwner = mutableStateOf<List<NFTCollection>?>(null)
-    val collectionsForOwner: State<List<NFTCollection>?> get() = _collectionsForOwner
+    private val _ethereumAddress = mutableStateOf("")
+    val ethereumAddress: State<String> get() = _ethereumAddress
 
-    /*
-    private val _nftsForOwner = mutableStateOf<List<NFTContract>?>(null)
-    val nftsForOwner: State<List<NFTContract>?> get() = _nftsForOwner
-     */
-    private val _contractMetadata = mutableStateOf<NFTCollectionMetaData?>(null)
-    val contractMetadata: State<NFTCollectionMetaData?> get() = _contractMetadata
-    fun getCollectionForOwner(address: String) {
-        viewModelScope.launch {
-            try {
-                val response = alchemyRepository.getCollectionsForOwner(address)
-                if (response.isSuccessful) {
-                    val collections = response.body()?.get("collections")?.jsonArray
-                    val nftCollectionsForOwner = Gson().fromJson<List<NFTCollection>>(
-                        collections.toString(),
-                        object : TypeToken<List<NFTCollection>>() {}.type
-                    )
-                    _collectionsForOwner.value = nftCollectionsForOwner
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
+    private val _collectionContractAddress = mutableStateOf("")
+    val collectionContractAddress: State<String> get() = _collectionContractAddress
+
+    private val _contractsForOwner = mutableStateOf<List<NFTContract>?>(null)
+    val contractsForOwner: State<List<NFTContract>?> get() = _contractsForOwner
+
+    private val _nftsForOwner = mutableStateOf<List<NftObject>?>(null)
+    val nftsForOwner: State<List<NftObject>?> get() = _nftsForOwner
+
+
+    fun setEthereumAddress(address: String) {
+        _ethereumAddress.value = address
     }
 
-    fun getContractMetadata(contractAddress: String, callback: (NFTCollectionMetaData?) -> Unit) {
-        viewModelScope.launch {
-            try {
-                val response = alchemyRepository.getContractMetadata(contractAddress)
-                if (response.isSuccessful) {
-                    val contractMetaData = response.body()?.jsonObject
-                    Log.d("ViewModel", "Contract Metadata: $contractMetaData")
-                    val nftContractMetaData = Gson().fromJson<NFTCollectionMetaData>(
-                        contractMetaData.toString(),
-                        object : TypeToken<NFTCollectionMetaData>() {}.type
-                    )
-                    _contractMetadata.value = nftContractMetaData
-                    callback(nftContractMetaData)
-                    //Log.d("ViewModel", "Contract Metadata Updated: ${_contractMetadata.value.toString()}")
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
+    fun setCollectionContractAddress(address: String) {
+        _collectionContractAddress.value = address
     }
-/*
-    fun getNftsForOwner(owner: String, contractAddress: String) {
+
+    fun getContractsForOwner(address: String) {
         viewModelScope.launch {
             try {
-                val response = alchemyRepository.getNFTsForOwner(owner, contractAddress)
+                val response = alchemyRepository.getContractsForOwner(address)
                 if (response.isSuccessful) {
-                    val nfts = response.body()?.get("ownedNfts")?.jsonArray
+                    val contracts = response.body()?.get("contracts")?.jsonArray
                     val nftContractsForOwner = Gson().fromJson<List<NFTContract>>(
-                        nfts.toString(),
+                        contracts.toString(),
                         object : TypeToken<List<NFTContract>>() {}.type
                     )
-                    _nftsForOwner.value = nftContractsForOwner
-
+                    _contractsForOwner.value = nftContractsForOwner
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -87,7 +62,30 @@ class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewM
         }
     }
 
- */
+    fun getNFTsForOwner(address: String, contractAddresses: List<String>) {
+        viewModelScope.launch {
+            try {
+                val response = alchemyRepository.getNFtsForOwner(address, contractAddresses)
+                if (response.isSuccessful) {
+                    val ownedNfts = response.body()?.get("ownedNfts")?.jsonArray
+                    Log.d("ownedNfts", ownedNfts.toString())
+                        val nfts = Gson().fromJson<List<NftObject>>(
+                            ownedNfts.toString(),
+                            object : TypeToken<List<NftObject>>() {}.type
+                        )
+                        Log.d("result", nfts.toString())
+
+                        _nftsForOwner.value = nfts
+                    } else {
+                        Log.d("json", "JSON is null")
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+        }
+    }
+
+
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
