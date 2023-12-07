@@ -1,21 +1,21 @@
 package com.example.androidexamenproject.data
 
+import android.content.Context
 import com.example.androidexamenproject.network.ApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
 
 
 interface AppContainer {
     val alchemyRepository: AlchemyRepository
 }
 
-class DefaultAppContainer : AppContainer {
+class DefaultAppContainer(context: Context) : AppContainer {
 
-    private val BASE_URL = "https://eth-mainnet.g.alchemy.com/nft/v3/1ImBO3FQkmn5rDP3Z1LqzTP8SoC7NhOK/"
+    private val BASE_URL = "https://eth-mainnet.g.alchemy.com/nft/v3//"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -38,6 +38,6 @@ class DefaultAppContainer : AppContainer {
     }
 
     override val alchemyRepository: AlchemyRepository by lazy {
-        NetworkAlchemyRepository(alchemyRetrofitService)
+        NetworkAlchemyRepository(alchemyRetrofitService, NFTAppDatabase.getDatabase(context).nftContractDao(), NFTAppDatabase.getDatabase(context).ethereumAddressDao())
     }
 }
