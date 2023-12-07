@@ -1,9 +1,9 @@
 package com.example.androidexamenproject.model
 
+import androidx.room.Entity
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
-@Serializable
+@Serializable @Entity(tableName = "Contracts")
 data class Contract(
     val address: String?,
     val name: String?,
@@ -23,7 +23,7 @@ data class OwnedNfts(
     //val pageKey: String?,
     //val validAt: ValidAt?
 )
-@Serializable
+@Serializable @Entity(tableName = "NftObjects")
 data class NftObject(
     val contract: Contract?,
     val tokenId: String?,
@@ -40,7 +40,7 @@ data class NftObject(
     val balance: String?,
     val acquiredAt: AcquiredAt?
 )
-@Serializable
+@Serializable @Entity(tableName = "Mint")
 data class Mint(
     val mintAddress: String?,
     val blockNumber: String?,
@@ -54,14 +54,14 @@ data class ValidAt(
     val blockTimestamp: String?
 )
 
-@Serializable
+@Serializable @Entity(tableName = "Raw")
 data class Raw(
     val tokenUri: String?,
     val metadata: MetaData?,
     val error: String?
 )
 
-@Serializable
+@Serializable @Entity(tableName = "MetaData")
 data class MetaData(
     val image: String?,
     val name: String?,
@@ -69,13 +69,13 @@ data class MetaData(
     val attributes: List<Attributes>?,
 )
 
-@Serializable
+@Serializable @Entity(tableName = "Attributes")
 data class Attributes(
     val value: String?,
     val traitType: String?
 )
 
-@Serializable
+@Serializable @Entity(tableName = "Collections")
 data class Collection(
     val name: String?,
     val slug: String?,
@@ -83,8 +83,9 @@ data class Collection(
     val bannerImageUrl: String?
 )
 
-@Serializable
+@Serializable @Entity(tableName = "AcquiredAt")
 data class AcquiredAt(
     val blockTimestamp: String?,
     val blockNumber: String?,
 )
+

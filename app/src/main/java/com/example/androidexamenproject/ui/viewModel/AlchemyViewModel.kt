@@ -10,19 +10,18 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.androidexamenproject.NFTApplication
 import com.example.androidexamenproject.data.AlchemyRepository
+import com.example.androidexamenproject.model.EthereumAddress
 import com.example.androidexamenproject.model.NFTContract
 import com.example.androidexamenproject.model.NftObject
-import com.example.androidexamenproject.model.OwnedNfts
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.Json.Default.decodeFromString
 import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
 import java.io.IOException
+class AlchemyViewModel(
+    private val alchemyRepository: AlchemyRepository
+) : ViewModel() {
 
-class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewModel() {
     private val _ethereumAddress = mutableStateOf("")
     val ethereumAddress: State<String> get() = _ethereumAddress
 
@@ -37,7 +36,14 @@ class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewM
 
 
     fun setEthereumAddress(address: String) {
-        _ethereumAddress.value = address
+        viewModelScope.launch {
+            try {
+                alchemyRepository.insertEthereumAddress(EthereumAddress(address))
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
     }
 
     fun setCollectionContractAddress(address: String) {
@@ -47,20 +53,31 @@ class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewM
     fun getContractsForOwner(address: String) {
         viewModelScope.launch {
             try {
-                val response = alchemyRepository.getContractsForOwner(address)
-                if (response.isSuccessful) {
-                    val contracts = response.body()?.get("contracts")?.jsonArray
-                    val nftContractsForOwner = Gson().fromJson<List<NFTContract>>(
-                        contracts.toString(),
-                        object : TypeToken<List<NFTContract>>() {}.type
-                    )
-                    _contractsForOwner.value = nftContractsForOwner
+                alchemyRepository.getContractsStream().collect { localContracts ->
+                    _contractsForOwner.value = localContracts
+
+                    if (localContracts.isEmpty()) {
+                        val response = alchemyRepository.getContractsForOwner(address)
+                        if (response.isSuccessful) {
+                            val contracts = response.body()?.get("contracts")?.jsonArray
+                            val nftContractsForOwner = Gson().fromJson<List<NFTContract>>(
+                                contracts.toString(),
+                                object : TypeToken<List<NFTContract>>() {}.type
+                            )
+                            for (nftContract in nftContractsForOwner) {
+                                alchemyRepository.insertContract(nftContract)
+                            }
+                            _contractsForOwner.value = nftContractsForOwner
+                        }
+                    }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
         }
     }
+
+
 
     fun getNFTsForOwner(address: String, contractAddresses: List<String>) {
         viewModelScope.launch {
@@ -84,8 +101,6 @@ class AlchemyViewModel(private val alchemyRepository: AlchemyRepository) : ViewM
                 }
         }
     }
-
-
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

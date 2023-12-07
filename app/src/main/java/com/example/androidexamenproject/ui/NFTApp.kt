@@ -17,9 +17,9 @@ import com.example.androidexamenproject.ui.viewModel.AlchemyViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NFTApp(
-    navController: NavHostController = rememberNavController(),
-    alchemyViewModel: AlchemyViewModel = viewModel(factory = AlchemyViewModel.Factory)
 ) {
+    var navController: NavHostController = rememberNavController()
+
     var alchemyViewModel: AlchemyViewModel =
         viewModel(factory = AlchemyViewModel.Factory)
     Scaffold(

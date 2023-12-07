@@ -12,11 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.androidexamenproject.model.Contract
 import com.example.androidexamenproject.model.NftObject
 import com.example.androidexamenproject.ui.viewModel.AlchemyViewModel
 
@@ -44,7 +42,6 @@ fun NFTsPerCollectionList(
 fun NFTCard(
     nft: NftObject?
 ){
-    Log.d("tokenUri", "NFTCard: ${nft?.tokenUri}")
     ElevatedCard(onClick = { /*TODO*/ }) {
         AsyncImage(
             model = nft?.tokenUri ?: "",
