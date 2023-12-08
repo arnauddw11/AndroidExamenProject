@@ -52,35 +52,50 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
     var searchText by remember { mutableStateOf("") }
     var sortByHighestFloorPrice by remember { mutableStateOf(false) }
     var sortByLowestFloorPrice by remember { mutableStateOf(false) }
-
-    LazyColumn(
-        modifier = modifier,
-        verticalArrangement = Arrangement.SpaceBetween,
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
     ) {
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "NFT Collections",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                TextField(
-                    value = searchText,
-                    onValueChange = {
-                        searchText = it
-                        filteredCollectionList = filterAndSortCollections(nftCollectionList, it, sortByHighestFloorPrice, sortByLowestFloorPrice)
-                        filterApplied = it.isNotEmpty() || sortByHighestFloorPrice || sortByLowestFloorPrice
-                    },
-                    label = { Text("Search Collection") },
+        Text(
+            text = alchemyViewModel.ethereumAddress.value,
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            text = "NFT Collections",
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            item {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    singleLine = true,
-                )
+                ) {
+
+                    TextField(
+                        value = searchText,
+                        onValueChange = {
+                            searchText = it
+                            filteredCollectionList = filterAndSortCollections(
+                                nftCollectionList,
+                                it,
+                                sortByHighestFloorPrice,
+                                sortByLowestFloorPrice
+                            )
+                            filterApplied =
+                                it.isNotEmpty() || sortByHighestFloorPrice || sortByLowestFloorPrice
+                        },
+                        label = { Text("Search Collection") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        singleLine = true,
+                    )
 
                     Column(
                         modifier = Modifier
@@ -95,7 +110,12 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
                             Button(onClick = {
                                 sortByHighestFloorPrice = !sortByHighestFloorPrice
                                 sortByLowestFloorPrice = false
-                                filteredCollectionList = filterAndSortCollections(nftCollectionList, searchText, sortByHighestFloorPrice, sortByLowestFloorPrice)
+                                filteredCollectionList = filterAndSortCollections(
+                                    nftCollectionList,
+                                    searchText,
+                                    sortByHighestFloorPrice,
+                                    sortByLowestFloorPrice
+                                )
                                 filterApplied = searchText.isNotEmpty() || sortByHighestFloorPrice
                             }) {
                                 Text("Highest floor price")
@@ -103,7 +123,12 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
                             Button(onClick = {
                                 sortByLowestFloorPrice = !sortByLowestFloorPrice
                                 sortByHighestFloorPrice = false
-                                filteredCollectionList = filterAndSortCollections(nftCollectionList, searchText, sortByHighestFloorPrice, sortByLowestFloorPrice)
+                                filteredCollectionList = filterAndSortCollections(
+                                    nftCollectionList,
+                                    searchText,
+                                    sortByHighestFloorPrice,
+                                    sortByLowestFloorPrice
+                                )
                                 filterApplied = searchText.isNotEmpty() || sortByLowestFloorPrice
                             }) {
                                 Text("Lowest floor price")
@@ -112,12 +137,13 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
                     }
                 }
             }
-        items(if (filterApplied) filteredCollectionList else nftCollectionList) { nftCollection ->
-            NFTCollectionCard(
-                nftCollection = nftCollection,
-                navController = navController,
-                viewModel = alchemyViewModel,
-            )
+            items(if (filterApplied) filteredCollectionList else nftCollectionList) { nftCollection ->
+                NFTCollectionCard(
+                    nftCollection = nftCollection,
+                    navController = navController,
+                    viewModel = alchemyViewModel,
+                )
+            }
         }
     }
 }
@@ -155,7 +181,7 @@ fun NFTCollectionCard(
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
+            .padding(8.dp)
             .clickable {
                 viewModel.setCollectionContractAddress(nftCollection?.address ?: "")
                 navController.navigate("nfts")

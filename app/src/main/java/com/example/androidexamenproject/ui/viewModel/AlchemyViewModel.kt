@@ -1,6 +1,5 @@
 package com.example.androidexamenproject.ui.viewModel
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -16,6 +15,8 @@ import com.example.androidexamenproject.model.NFTContract
 import com.example.androidexamenproject.model.NftObject
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.jsonArray
 import java.io.IOException
@@ -24,8 +25,8 @@ class AlchemyViewModel(
     private val localRepository: LocalRepository
 ) : ViewModel() {
 
-    private val _ethereumAddress = mutableStateOf("")
-    val ethereumAddress: State<String> get() = _ethereumAddress
+    private val _ethereumAddress = MutableStateFlow("")
+    val ethereumAddress: StateFlow<String> get() = _ethereumAddress
 
     private val _collectionContractAddress = mutableStateOf("")
     val collectionContractAddress: State<String> get() = _collectionContractAddress
@@ -36,6 +37,15 @@ class AlchemyViewModel(
     private val _nftsForOwner = mutableStateOf<List<NftObject>?>(null)
     val nftsForOwner: State<List<NftObject>?> get() = _nftsForOwner
 
+    fun getEthereumAddress() {
+        viewModelScope.launch {
+            try {
+                _ethereumAddress.value = localRepository.getEthereumAddress().toString()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
     fun setEthaddress(address: String) {
         viewModelScope.launch {
             try {
@@ -78,8 +88,6 @@ class AlchemyViewModel(
     }
 
 
-
-
     fun getNFTsForOwner(address: String, contractAddresses: List<String>) {
         viewModelScope.launch {
             try {
@@ -90,11 +98,7 @@ class AlchemyViewModel(
                             ownedNfts.toString(),
                             object : TypeToken<List<NftObject>>() {}.type
                         )
-                        Log.d("result", nfts.toString())
-
                         _nftsForOwner.value = nfts
-                    } else {
-                        Log.d("json", "JSON is null")
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()

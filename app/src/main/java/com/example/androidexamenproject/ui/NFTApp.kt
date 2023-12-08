@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -22,6 +23,9 @@ fun NFTApp(
 
     var alchemyViewModel: AlchemyViewModel =
         viewModel(factory = AlchemyViewModel.Factory)
+    LaunchedEffect(key1 = Unit) {
+        alchemyViewModel.getEthereumAddress()
+    }
     Scaffold(
         bottomBar = {
             BottomAppBar(navController = navController)
