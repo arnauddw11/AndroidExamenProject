@@ -11,6 +11,7 @@ import retrofit2.Retrofit
 
 interface AppContainer {
     val alchemyRepository: AlchemyRepository
+    val localRepository: LocalRepository
 }
 
 class DefaultAppContainer(context: Context) : AppContainer {
@@ -21,14 +22,8 @@ class DefaultAppContainer(context: Context) : AppContainer {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    /*
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor) // Add the logging interceptor
-        .build()
-    */
     private val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-        //.client(okHttpClient)
         .baseUrl(BASE_URL)
         .build()
 
@@ -38,6 +33,9 @@ class DefaultAppContainer(context: Context) : AppContainer {
     }
 
     override val alchemyRepository: AlchemyRepository by lazy {
-        NetworkAlchemyRepository(alchemyRetrofitService, NFTAppDatabase.getDatabase(context).nftContractDao(), NFTAppDatabase.getDatabase(context).ethereumAddressDao())
+        NetworkAlchemyRepository(alchemyRetrofitService)
+    }
+    override val localRepository: LocalRepository by lazy {
+        OfflineLocalRepository(NFTAppDatabase.getDatabase(context).nftContractDao(), NFTAppDatabase.getDatabase(context).ethereumAddressDao())
     }
 }
