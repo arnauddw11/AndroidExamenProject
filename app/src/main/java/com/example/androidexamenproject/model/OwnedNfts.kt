@@ -1,9 +1,10 @@
 package com.example.androidexamenproject.model
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import kotlinx.serialization.Serializable
 
-@Serializable @Entity(tableName = "Contracts")
+@Serializable @Entity(tableName = "contractsOwnedNfts")
 data class Contract(
     val address: String?,
     val name: String?,
@@ -12,16 +13,10 @@ data class Contract(
     val tokenType: String?,
     val contractDeployer: String?,
     val deployedBlockNumber: String?,
+    @Embedded
     val openSeaMetadata: OpenSeaMetadata?,
     val isSpam: Boolean?,
     val spamClassifications: List<String>?,
-)
-@Serializable
-data class OwnedNfts(
-    val ownedNfts: List<NftObject>?,
-    //val totalCount: String?,
-    //val pageKey: String?,
-    //val validAt: ValidAt?
 )
 @Serializable @Entity(tableName = "NftObjects")
 data class NftObject(
@@ -32,12 +27,16 @@ data class NftObject(
     val description: String?,
     val tokenUri: String?,
     val image: Image?,
+    @Embedded
     val raw: Raw?,
+    @Embedded
     val collection: Collection?,
+    @Embedded
     val mint: Mint?,
     val owners: List<String>?,
     val timeLastUpdated: String?,
     val balance: String?,
+    @Embedded
     val acquiredAt: AcquiredAt?
 )
 @Serializable @Entity(tableName = "Mint")
@@ -47,16 +46,11 @@ data class Mint(
     val timestamp: String?,
     val transactionHash: String?
 )
-@Serializable
-data class ValidAt(
-    val blockNumber: String?,
-    val blockHash: String?,
-    val blockTimestamp: String?
-)
 
 @Serializable @Entity(tableName = "Raw")
 data class Raw(
     val tokenUri: String?,
+    @Embedded
     val metadata: MetaData?,
     val error: String?
 )

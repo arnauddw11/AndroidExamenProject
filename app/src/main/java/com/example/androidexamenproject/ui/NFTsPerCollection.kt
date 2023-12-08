@@ -1,6 +1,5 @@
 package com.example.androidexamenproject.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -26,7 +25,6 @@ fun NFTsPerCollectionList(
     val nfts = alchemyViewModel.nftsForOwner.value
     LaunchedEffect(nfts){
         alchemyViewModel.getNFTsForOwner(alchemyViewModel.ethereumAddress.value, listOf(alchemyViewModel.collectionContractAddress.value))
-        Log.d("NFTsPerCollectionList", "NFTsPerCollectionList: ${alchemyViewModel.nftsForOwner.value}")
     }
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp)

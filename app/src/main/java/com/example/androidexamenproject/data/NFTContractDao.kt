@@ -19,4 +19,7 @@ interface NFTContractDao{
     suspend fun delete(nftContract: NFTContract)
     @Query("SELECT * FROM contracts")
     fun getNFTContracts(): Flow<List<NFTContract>>
+    @Query("DELETE FROM contracts")
+    suspend fun clearContractsTable()
+
 }

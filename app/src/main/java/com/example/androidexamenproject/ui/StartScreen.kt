@@ -14,9 +14,11 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.androidexamenproject.ui.viewModel.AlchemyViewModel
@@ -25,11 +27,10 @@ import com.example.androidexamenproject.ui.viewModel.AlchemyViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GiveEthereumAddress(navController: NavController, alchemyViewModel: AlchemyViewModel){
-    val ethereumAddress by alchemyViewModel.ethereumAddress
-    var context =LocalContext.current.applicationContext;
+    var ethereumAddress by remember { mutableStateOf("") }
     DisposableEffect(Unit) {
-        alchemyViewModel.setEthereumAddress(ethereumAddress)
-        alchemyViewModel.getContractsForOwner(ethereumAddress)
+        alchemyViewModel.setEthaddress(ethereumAddress)
+        //lchemyViewModel.getContractsForOwner(ethereumAddress)
         onDispose {
         }
     }
@@ -43,13 +44,14 @@ fun GiveEthereumAddress(navController: NavController, alchemyViewModel: AlchemyV
     ) {
         TextField(
             value = ethereumAddress,
-            onValueChange = { alchemyViewModel.setEthereumAddress(it) },
+            onValueChange = { ethereumAddress = it },
             label = { Text(text = "Address")
             }
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
+                alchemyViewModel.setEthaddress(ethereumAddress)
                 alchemyViewModel.getContractsForOwner(ethereumAddress)
                 navController.navigate("collections")
             },

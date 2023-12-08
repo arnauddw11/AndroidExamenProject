@@ -19,7 +19,7 @@ import com.example.androidexamenproject.model.StringListTypeConverter
 @Database(entities = [NFTContract::class, OpenSeaMetadata::class, DisplayNft::class, Image::class, EthereumAddress::class], version = 1, exportSchema = false)
 abstract class NFTAppDatabase : RoomDatabase() {
     abstract fun nftContractDao(): NFTContractDao
-    abstract fun ethereumAddressDao(): EthereumAddressDao
+   abstract fun ethereumAddressDao(): EthereumAddressDao
 
     companion object {
         @Volatile
