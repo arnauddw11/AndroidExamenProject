@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +47,7 @@ import com.example.androidexamenproject.ui.viewModel.AlchemyViewModel
 @Composable
 fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = Modifier, navController: NavController) {
 
-    var nftCollectionList: List<NFTContract> = alchemyViewModel.contractsForOwner.value ?: listOf()
+    var nftCollectionList: List<NFTContract> = alchemyViewModel.contractsForOwner.collectAsState().value ?: listOf()
     var filteredCollectionList by remember { mutableStateOf(nftCollectionList) }
     var filterApplied by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
@@ -58,7 +59,7 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
             .padding(16.dp)
     ) {
         Text(
-            text = alchemyViewModel.ethereumAddress.value,
+            text = alchemyViewModel.ethereumAddress.collectAsState().value,
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -76,7 +77,6 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-
                     TextField(
                         value = searchText,
                         onValueChange = {
@@ -96,7 +96,6 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
                             .padding(vertical = 8.dp),
                         singleLine = true,
                     )
-
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()

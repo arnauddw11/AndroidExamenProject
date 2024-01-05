@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
@@ -118,7 +117,7 @@ fun NFTCard(
                     model = nft?.image?.cachedUrl ?: nft?.raw?.metadata?.image ?: "",
                     contentDescription = nft?.description ?: "",
                     modifier = Modifier
-                        .size(300.dp)
+                        //.size(300.dp)
                         .align(Alignment.Center)
                         .clickable { isImageClicked = true },
                     imageLoader = imageLoader,

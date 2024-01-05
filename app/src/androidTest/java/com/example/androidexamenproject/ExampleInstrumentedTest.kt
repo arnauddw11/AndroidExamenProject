@@ -1,24 +1,33 @@
 package com.example.androidexamenproject
 
-import androidx.test.platform.app.InstrumentationRegistry
+import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
+import com.example.androidexamenproject.data.NetworkAlchemyRepository
+import com.example.androidexamenproject.fake.FakeDataSource
+import com.example.androidexamenproject.fake.FakeNFTCollectionsApi
+import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.jsonObject
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import org.junit.Assert.*
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
+
     @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.androidexamenproject", appContext.packageName)
-    }
+    fun getContractsForOwnerTest() =
+        runTest {
+            val repository = NetworkAlchemyRepository(FakeNFTCollectionsApi())
+            val response =
+                repository.getContractsForOwner("0x0d4c98901563ca9fb7bdaa3c3a4ebee2b6c65dd4")
+            val expected = Json.encodeToJsonElement(FakeDataSource.fakeNfts).jsonObject
+
+            Log.d("expected", expected.toString())
+            Log.d("response", response.body().toString())
+            assertEquals(expected.toString(), response.body().toString())
+        }
+
 }

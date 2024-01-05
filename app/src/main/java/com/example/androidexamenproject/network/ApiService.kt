@@ -20,9 +20,6 @@ interface ApiService {
     suspend fun getNFTsForOwner(
         @Query("owner") owner: String,
         @Query("contractAddresses[]") contractAddresses: List<String>,
-        @Query("withMetadata") withMetadata: Boolean = true,
-        //@Query("excludeFilters[]") excludeFilters: String = "SPAM",
-        //@Query("spamConfidenceLevel") spamConfidenceLevel: String = "HIGH",
-        //@Query("pageSize") pageSize: Int = 100,
+        @Query("withMetadata") withMetadata: Boolean = true
     ): Response<JsonObject>
 }

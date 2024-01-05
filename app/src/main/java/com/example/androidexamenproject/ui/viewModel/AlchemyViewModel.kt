@@ -31,8 +31,8 @@ class AlchemyViewModel(
     private val _collectionContractAddress = mutableStateOf("")
     val collectionContractAddress: State<String> get() = _collectionContractAddress
 
-    private val _contractsForOwner = mutableStateOf<List<NFTContract>?>(null)
-    val contractsForOwner: State<List<NFTContract>?> get() = _contractsForOwner
+    private val _contractsForOwner = MutableStateFlow<List<NFTContract>?>(null)
+    val contractsForOwner: StateFlow<List<NFTContract>?> get() = _contractsForOwner
 
     private val _nftsForOwner = mutableStateOf<List<NftObject>?>(null)
     val nftsForOwner: State<List<NftObject>?> get() = _nftsForOwner
