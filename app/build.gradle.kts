@@ -77,6 +77,7 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.5.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
+    implementation("androidx.media3:media3-common:1.3.1")
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")

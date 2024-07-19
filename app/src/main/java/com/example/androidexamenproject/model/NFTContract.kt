@@ -6,6 +6,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
+@Serializable
+data class Rarity(
+    val traitType: String,
+    val value: String,
+    val prevalence: Double
+)
+
 @Serializable @Entity(tableName = "contracts")
 data class NFTContract(
     @PrimaryKey

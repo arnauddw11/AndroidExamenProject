@@ -6,13 +6,11 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
-
     @GET("getContractsForOwner")
     suspend fun getContractsForOwner(
         @Query("owner") owner: String,
         @Query("withMetadata") withMetadata: Boolean = true,
         @Query("excludeFilters[]") excludeFilters: String = "SPAM",
-        @Query("spamConfidenceLevel") spamConfidenceLevel: String = "HIGH",
         @Query("pageSize") pageSize: Int = 100,
     ): Response<JsonObject>
 
@@ -22,4 +20,11 @@ interface ApiService {
         @Query("contractAddresses[]") contractAddresses: List<String>,
         @Query("withMetadata") withMetadata: Boolean = true
     ): Response<JsonObject>
+
+    @GET("computeRarity")
+    suspend fun computeRarity(
+        @Query("contractAddress") contractAddress: String,
+        @Query("tokenId") tokenId: String,
+    ): Response<JsonObject>
+
 }

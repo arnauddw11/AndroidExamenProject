@@ -42,7 +42,6 @@ fun NFTApp(
             BottomAppBar(navController = navController)
         }
     ) { innerPadding ->
-        //Log.d("ethaddress", alchemyViewModel.ethereumAddress.collectAsState().value)
         NavHost(
             navController = navController,
             startDestination = "home"
@@ -74,6 +73,14 @@ fun NFTApp(
                         navController = navController
                     )}
                 }
+            composable("account") {
+                Box(
+                    modifier = Modifier
+                        .padding(innerPadding),
+                ) {
+                    AccountScreen(alchemyViewModel = alchemyViewModel)
+                }
+            }
             }
         }
     }

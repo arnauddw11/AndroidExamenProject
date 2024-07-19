@@ -1,5 +1,6 @@
 package com.example.androidexamenproject.ui.viewModel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import com.example.androidexamenproject.data.LocalRepository
 import com.example.androidexamenproject.model.EthereumAddress
 import com.example.androidexamenproject.model.NFTContract
 import com.example.androidexamenproject.model.NftObject
+import com.example.androidexamenproject.model.Rarity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +39,11 @@ class AlchemyViewModel(
     private val _nftsForOwner = mutableStateOf<List<NftObject>?>(null)
     val nftsForOwner: State<List<NftObject>?> get() = _nftsForOwner
 
+    private val _rarities = MutableStateFlow<List<Rarity>?>(null)
+    val rarities: StateFlow<List<Rarity>?> get() = _rarities
+
+
+
     fun getEthereumAddress() {
         viewModelScope.launch {
             try {
@@ -49,11 +56,15 @@ class AlchemyViewModel(
     fun setEthaddress(address: String) {
         viewModelScope.launch {
             try {
-                localRepository.clearEthereumAddressTable()
-                localRepository.insertEthereumAddress(EthereumAddress(address))
-                _ethereumAddress.value = address
-                localRepository.clearContractsTable()
-                _contractsForOwner.value = null
+                if(localRepository.getEthereumAddress().equals("")){
+                    localRepository.insertEthereumAddress(EthereumAddress(address))
+                } else {
+                    localRepository.clearEthereumAddressTable()
+                    localRepository.insertEthereumAddress(EthereumAddress(address))
+                    _ethereumAddress.value = address
+                    localRepository.clearContractsTable()
+                    _contractsForOwner.value = null
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -63,13 +74,13 @@ class AlchemyViewModel(
     fun setCollectionContractAddress(address: String) {
         _collectionContractAddress.value = address
     }
-
     fun getContractsForOwner(address: String) {
         viewModelScope.launch {
             try {
                 if (contractsForOwner.value.isNullOrEmpty()) {
                     val response = alchemyRepository.getContractsForOwner(address)
                     if (response.isSuccessful) {
+                        Log.d("response", response.toString());
                         val contracts = response.body()?.get("contracts")?.jsonArray
                         val nftContractsForOwner = Gson().fromJson<List<NFTContract>>(
                             contracts.toString(),
@@ -103,6 +114,27 @@ class AlchemyViewModel(
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
+        }
+    }
+
+    fun computeRarity(contractAddress: String, tokenId: String) {
+        viewModelScope.launch {
+            try {
+                val response = alchemyRepository.computeRarity(contractAddress, tokenId)
+                Log.d("rarity response", response.toString())
+                if (response.isSuccessful) {
+                    val raritiesJSON = response.body()?.get("rarities")?.jsonArray
+                    Log.d("received rarity", raritiesJSON.toString())
+                    val rarities = Gson().fromJson<List<Rarity>>(
+                        raritiesJSON.toString(),
+                        object : TypeToken<List<Rarity>>() {}.type
+                    )
+                    _rarities.value = rarities
+                }
+            } catch (e: IOException) {
+
+                e.printStackTrace()
+            }
         }
     }
 

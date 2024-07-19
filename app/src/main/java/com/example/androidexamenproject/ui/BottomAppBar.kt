@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,22 +34,19 @@ fun BottomAppBar(navController: NavController) {
                     .padding(8.dp)
                     .size(50.dp)
                     .clickable {
-                        navController.navigate("home")
+                        navController.navigate("collections")
                     },
             )
-            /*
             Icon(
-                Icons.Default.List,
-                contentDescription = "Nft Collections",
+                Icons.Default.AccountCircle,
+                contentDescription = "Account",
                 modifier = Modifier
                     .padding(8.dp)
                     .size(50.dp)
                     .clickable {
-                        navController.navigate("collections")
+                        navController.navigate("account")
                     },
-                )
-                
-             */
+            )
         }
     }
 }
