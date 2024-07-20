@@ -21,7 +21,7 @@ fun AccountScreen(
 ) {
     val ethereumAddress by alchemyViewModel.ethereumAddress.collectAsState()
     val userInfo = ethNodeViewModel.userInfo.collectAsState().value
-    Log.d("test", userInfo.toString())
+    Log.d("test userInfo", userInfo.toString())
     LaunchedEffect(userInfo) {
         ethNodeViewModel.getUserInfo()
     }

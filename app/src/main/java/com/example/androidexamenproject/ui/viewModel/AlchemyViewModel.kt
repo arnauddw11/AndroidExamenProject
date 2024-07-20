@@ -184,7 +184,7 @@ class AlchemyViewModel(
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as NFTApplication)
                 val alchemyRepository = application.container.alchemyRepository
                 val localRepository = application.container.localRepository
-                AlchemyViewModel(alchemyRepository = alchemyRepository, localRepository = localRepository, web3j = application.container.web3)
+                AlchemyViewModel(alchemyRepository = alchemyRepository, localRepository = localRepository, web3j = application.container.web3j)
             }
         }
     }
