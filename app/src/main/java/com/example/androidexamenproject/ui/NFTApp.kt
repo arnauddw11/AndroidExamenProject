@@ -1,6 +1,5 @@
 package com.example.androidexamenproject.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.androidexamenproject.ui.viewModel.AlchemyViewModel
+import com.example.androidexamenproject.ui.viewModel.EthNodeViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,10 +28,11 @@ fun NFTApp(
 
     var alchemyViewModel: AlchemyViewModel =
         viewModel(factory = AlchemyViewModel.Factory)
+    var ethNodeViewModel: EthNodeViewModel =
+        viewModel(factory = EthNodeViewModel.Factory)
     var navigateToCollections by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
-        Log.d("ethaddress", alchemyViewModel.ethereumAddress.value)
         if (alchemyViewModel.ethereumAddress.value != "") {
             navController.navigate("collections")
         }
@@ -78,7 +79,7 @@ fun NFTApp(
                     modifier = Modifier
                         .padding(innerPadding),
                 ) {
-                    AccountScreen(alchemyViewModel = alchemyViewModel)
+                    AccountScreen(alchemyViewModel = alchemyViewModel, ethNodeViewModel = ethNodeViewModel)
                 }
             }
             }

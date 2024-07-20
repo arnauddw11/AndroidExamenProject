@@ -57,7 +57,7 @@ android {
 }
 
 dependencies {
-
+    implementation ("org.web3j:core:5.0.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
