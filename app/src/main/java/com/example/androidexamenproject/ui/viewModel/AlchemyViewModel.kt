@@ -23,15 +23,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.jsonArray
-import org.web3j.ens.EnsResolver
-import org.web3j.protocol.Web3j
+import org.kethereum.eip137.model.ENSName
+import org.kethereum.ens.ENS
+import org.kethereum.model.Address
+import org.kethereum.rpc.EthereumRPC
 import java.io.IOException
 import java.util.regex.Pattern
 
 class AlchemyViewModel(
     private val alchemyRepository: AlchemyRepository,
     private val localRepository: LocalRepository,
-    private val web3j: Web3j
+    private val ethereumRPC: EthereumRPC
 ) : ViewModel() {
 
     private val _ethereumAddress = MutableStateFlow("")
@@ -85,17 +87,18 @@ class AlchemyViewModel(
     }
 
     private suspend fun getEnsName(address: String): String {
-        return withContext(Dispatchers.IO) {
-            try {
-                if (isResolved(address)) {
-                    EnsResolver(web3j).reverseResolve(address)
-                } else {
-                    address
-                }
-            } catch (e: Exception) {
-                Log.e("ENS Resolution", "Failed to resolve ENS name", e)
+        return try {
+            if (isResolved(address)) {
+                val ens = ENS(ethereumRPC, )
+                val address = ens.reverseResolve(Address(address))
+                address.toString()
+
+            } else {
                 address
             }
+        } catch (e: Exception) {
+            Log.e("ENS Resolution", "Failed to resolve ENS name", e)
+            address
         }
     }
 
@@ -105,7 +108,9 @@ class AlchemyViewModel(
                 if (isResolved(address)) {
                     address
                 } else {
-                    EnsResolver(web3j).resolve(address)
+                    val ens = ENS(ethereumRPC, )
+                    val address = ens.getAddress(ENSName(address))
+                    address.toString()
                 }
             } catch (e: Exception) {
                 Log.e("ENS Resolution", "Failed to resolve address", e)
@@ -184,7 +189,7 @@ class AlchemyViewModel(
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as NFTApplication)
                 val alchemyRepository = application.container.alchemyRepository
                 val localRepository = application.container.localRepository
-                AlchemyViewModel(alchemyRepository = alchemyRepository, localRepository = localRepository, web3j = application.container.web3j)
+                AlchemyViewModel(alchemyRepository = alchemyRepository, localRepository = localRepository, ethereumRPC = application.container.ethereumRPC)
             }
         }
     }

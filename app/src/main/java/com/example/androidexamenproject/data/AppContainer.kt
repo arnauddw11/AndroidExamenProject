@@ -5,15 +5,16 @@ import com.example.androidexamenproject.network.ApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
-import org.web3j.protocol.Web3j
-import org.web3j.protocol.http.HttpService
+import org.kethereum.rpc.EthereumRPC
+import org.kethereum.rpc.HttpEthereumRPC
 import retrofit2.Retrofit
+
 
 
 interface AppContainer {
     val alchemyRepository: AlchemyRepository
     val localRepository: LocalRepository
-    val web3j: Web3j
+    val ethereumRPC: EthereumRPC
 }
 
 class DefaultAppContainer(context: Context) : AppContainer {
@@ -27,9 +28,7 @@ class DefaultAppContainer(context: Context) : AppContainer {
         .baseUrl(BASE_URL)
         .build()
 
-    override val web3j = Web3j.build(HttpService(ETH_NODE_URL))
-
-
+    override val ethereumRPC: EthereumRPC = HttpEthereumRPC(ETH_NODE_URL)
 
     private val alchemyRetrofitService: ApiService by lazy {
         retrofit.create(ApiService::class.java)
