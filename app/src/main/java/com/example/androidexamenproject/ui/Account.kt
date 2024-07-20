@@ -3,8 +3,11 @@ package com.example.androidexamenproject.ui
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,14 +16,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.androidexamenproject.ui.viewModel.AlchemyViewModel
 import com.example.androidexamenproject.ui.viewModel.EthNodeViewModel
 
 @Composable
 fun AccountScreen(
-    alchemyViewModel: AlchemyViewModel,
     ethNodeViewModel: EthNodeViewModel
 ) {
     val userInfo by ethNodeViewModel.userInfo.collectAsState()
@@ -28,27 +31,50 @@ fun AccountScreen(
         ethNodeViewModel.getUserInfo()
     }
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        // Display user info if available
         userInfo?.let { info ->
             val gatewayUrl = "https://ipfs.io/ipfs/${info.avatar?.removePrefix("ipfs://")}"
 
-            // Convert BigInteger balance to BigDecimal and format it
             Log.d("test etherBalance", info.etherBalance.toString())
 
-            Text(text = info.ensAddress.toString())
-            Text(text = info.resolvedAddress.toString())
+            Text(
+                text = info.ensAddress.toString(),
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(bottom =  8.dp),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = info.resolvedAddress.toString(),
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(bottom= 16.dp),
+                textAlign = TextAlign.Center
+            )
             AsyncImage(
                 model = gatewayUrl,
                 contentDescription = null,
-                modifier = Modifier.size(128.dp),
+                modifier = Modifier
+                    .size(200.dp)
+                    .padding(bottom= 16.dp),
                 contentScale = ContentScale.Crop,
             )
-            Text(text = "Current balance: ${info.etherBalance} ETH")
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Current balance: ",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    text = "${info.etherBalance} ETH",
+                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary)
+                )
+            }
         }
     }
 }

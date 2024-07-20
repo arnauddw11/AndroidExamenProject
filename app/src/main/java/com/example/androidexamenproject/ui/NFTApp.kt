@@ -79,7 +79,7 @@ fun NFTApp(
                     modifier = Modifier
                         .padding(innerPadding),
                 ) {
-                    AccountScreen(alchemyViewModel = alchemyViewModel, ethNodeViewModel = ethNodeViewModel)
+                    AccountScreen(ethNodeViewModel = ethNodeViewModel)
                 }
             }
             }
