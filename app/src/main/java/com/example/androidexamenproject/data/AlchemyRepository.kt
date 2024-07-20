@@ -9,8 +9,8 @@ import retrofit2.Response
 interface AlchemyRepository {
     suspend fun getContractsForOwner(owner: String): Response<JsonObject>
     suspend fun getNFtsForOwner(owner: String, contractAddresses: List<String>): Response<JsonObject>
-
     suspend fun computeRarity(contractAddress: String, tokenId: String): Response<JsonObject>
+    suspend fun getNFTMetadata(contractAddress: String, tokenId: String): Response<JsonObject>
 }
 
 class NetworkAlchemyRepository(
@@ -25,6 +25,9 @@ class NetworkAlchemyRepository(
 
     override suspend fun computeRarity(contractAddress: String, tokenId: String): Response<JsonObject> =
         alchemyApiService.computeRarity(contractAddress, tokenId)
+
+    override suspend fun getNFTMetadata(contractAddress: String, tokenId: String): Response<JsonObject> =
+        alchemyApiService.getNFTMetadata(contractAddress, tokenId)
 
 }
 

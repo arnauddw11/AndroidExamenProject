@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -27,8 +29,13 @@ fun AccountScreen(
     ethNodeViewModel: EthNodeViewModel
 ) {
     val userInfo by ethNodeViewModel.userInfo.collectAsState()
-    LaunchedEffect(userInfo) {
-        ethNodeViewModel.getUserInfo()
+    val hasFetchedUserInfo = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (!hasFetchedUserInfo.value) {
+            ethNodeViewModel.getUserInfo()
+            hasFetchedUserInfo.value = true
+        }
     }
     Column(
         modifier = Modifier
@@ -38,7 +45,6 @@ fun AccountScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         userInfo?.let { info ->
-            val gatewayUrl = "https://ipfs.io/ipfs/${info.avatar?.removePrefix("ipfs://")}"
 
             Log.d("test etherBalance", info.etherBalance.toString())
 
@@ -55,7 +61,7 @@ fun AccountScreen(
                 textAlign = TextAlign.Center
             )
             AsyncImage(
-                model = gatewayUrl,
+                model = info.avatar.toString(),
                 contentDescription = null,
                 modifier = Modifier
                     .size(200.dp)
@@ -67,7 +73,7 @@ fun AccountScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Current balance: ",
+                    text = "Balance: ",
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(

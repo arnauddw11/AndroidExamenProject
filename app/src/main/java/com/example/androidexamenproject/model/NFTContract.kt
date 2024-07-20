@@ -30,6 +30,16 @@ data class NFTContract(
     val image: Image?,
 )
 
+@Serializable
+data class NftMetadata(
+    val address: String,
+    val name: String,
+    val symbol: String,
+    val openSeaMetadata: OpenSeaMetadata? = null,
+    val image: Image? = null
+)
+
+
 
 @Serializable @Entity(tableName = "openseaMetadata")
 data class OpenSeaMetadata (

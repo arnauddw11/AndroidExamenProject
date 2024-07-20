@@ -27,4 +27,10 @@ interface ApiService {
         @Query("tokenId") tokenId: String,
     ): Response<JsonObject>
 
+    @GET("getNFTMetadata")
+    suspend fun getNFTMetadata(
+        @Query("contractAddress") contractAddress: String,
+        @Query("tokenId") tokenId: String,
+    ): Response<JsonObject>
+
 }
