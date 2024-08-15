@@ -12,7 +12,7 @@ import com.example.androidexamenproject.model.Image
 import com.example.androidexamenproject.model.NFTContract
 import com.example.androidexamenproject.model.OpenSeaMetadata
 
-@Database(entities = [NFTContract::class, OpenSeaMetadata::class, DisplayNft::class, Image::class, EthereumAddress::class], version = 2, exportSchema = false)
+@Database(entities = [NFTContract::class, OpenSeaMetadata::class, DisplayNft::class, Image::class, EthereumAddress::class], version = 3, exportSchema = false)
 abstract class NFTAppDatabase : RoomDatabase() {
     abstract fun nftContractDao(): NFTContractDao
    abstract fun ethereumAddressDao(): EthereumAddressDao
@@ -29,14 +29,21 @@ abstract class NFTAppDatabase : RoomDatabase() {
                     "nft_database"
                 )
                     .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_2_3)
                     .build()
                     .also { INSTANCE = it }
             }
         }
-        
+
         private val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE ethereumAddresses ADD COLUMN ensAddress TEXT")
+            }
+        }
+
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE ethereumAddresses ADD COLUMN avatar TEXT")
             }
         }
     }

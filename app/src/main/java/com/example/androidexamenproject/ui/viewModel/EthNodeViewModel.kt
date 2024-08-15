@@ -49,12 +49,11 @@ class EthNodeViewModel(
 
                         var balance = ethereumRPC.getBalance(Address(address.ethAddress), "latest")
 
-                        val ens = ENS(ethereumRPC)
                         val avatar = getAvatar(address)
+                        localRepository.insertAvatar(address.ethAddress, avatar)
                         _userInfo.value = UserInfo(address.ensAddress, address.ethAddress, formatBalance(balance as BigInteger), avatar)
                     }
                 }
-                Log.d("test userInfo", userInfo.value.toString())
             } catch (e: IOException) {
                 e.printStackTrace()
             }

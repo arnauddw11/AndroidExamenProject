@@ -8,5 +8,6 @@ import androidx.room.PrimaryKey
 data class EthereumAddress (
     @PrimaryKey
     val ethAddress: String,
-    val ensAddress: String? = null
+    val ensAddress: String? = null,
+    val avatar: String? = null
 )

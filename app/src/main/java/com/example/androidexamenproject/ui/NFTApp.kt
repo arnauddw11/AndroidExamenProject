@@ -42,7 +42,7 @@ fun NFTApp() {
     Scaffold(
         bottomBar = {
             if (currentRoute != "home") {
-                BottomAppBar(navController = navController)
+                BottomAppBar(navController = navController, alchemyViewModel = alchemyViewModel)
             }
         }
     ) { innerPadding ->

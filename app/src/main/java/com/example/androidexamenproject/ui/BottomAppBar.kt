@@ -12,12 +12,15 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.example.androidexamenproject.ui.viewModel.AlchemyViewModel
 
 @Composable
-fun BottomAppBar(navController: NavController) {
+fun BottomAppBar(navController: NavController, alchemyViewModel: AlchemyViewModel) {
     androidx.compose.material3.BottomAppBar(
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -37,16 +40,31 @@ fun BottomAppBar(navController: NavController) {
                         navController.navigate("collections")
                     },
             )
-            Icon(
-                Icons.Default.AccountCircle,
-                contentDescription = "Account",
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(50.dp)
-                    .clickable {
-                        navController.navigate("account")
-                    },
-            )
+            // Check if avatar URL is not null
+            val avatarUrl = alchemyViewModel.ethDetails.collectAsState().value?.avatar.toString()
+            if (avatarUrl != null && avatarUrl != "") {
+                AsyncImage(
+                    model = avatarUrl,
+                    contentDescription = "Avatar",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(50.dp)
+                        .clickable {
+                            navController.navigate("account")
+                        }
+                )
+            } else {
+                Icon(
+                    Icons.Default.AccountCircle,
+                    contentDescription = "Account",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(50.dp)
+                        .clickable {
+                            navController.navigate("account")
+                        },
+                )
+            }
         }
     }
 }

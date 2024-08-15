@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.jsonArray
@@ -36,8 +37,12 @@ class AlchemyViewModel(
     private val ethereumRPC: EthereumRPC
 ) : ViewModel() {
 
+    //TODO FIX
     private val _ethereumAddress = MutableStateFlow("")
     val ethereumAddress: StateFlow<String> get() = _ethereumAddress
+
+    private val _ethDetails = MutableStateFlow<EthereumAddress?>(null)
+    val ethDetails: StateFlow<EthereumAddress?> get() = _ethDetails
 
     private val _collectionContractAddress = mutableStateOf("")
     val collectionContractAddress: State<String> get() = _collectionContractAddress
@@ -54,7 +59,9 @@ class AlchemyViewModel(
     fun getEthereumAddress() {
         viewModelScope.launch {
             try {
-                _ethereumAddress.value = localRepository.getEthereumAddress().toString()
+                var ethAddress = localRepository.getEthereumAddress().firstOrNull()
+                _ethereumAddress.value = ethAddress?.ethAddress.toString()
+                _ethDetails.value = ethAddress
             } catch (e: IOException) {
                 e.printStackTrace()
             }
