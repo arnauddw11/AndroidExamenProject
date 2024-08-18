@@ -56,7 +56,7 @@ fun BottomAppBar(navController: NavController, alchemyViewModel: AlchemyViewMode
             } else {
                 Icon(
                     Icons.Default.AccountCircle,
-                    contentDescription = "Account",
+                    contentDescription = "Avatar",
                     modifier = Modifier
                         .padding(8.dp)
                         .size(50.dp)

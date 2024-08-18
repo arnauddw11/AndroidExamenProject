@@ -44,9 +44,8 @@ fun AccountScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(text = "Profile", style = MaterialTheme.typography.headlineLarge)
         userInfo?.let { info ->
-
-            Log.d("test etherBalance", info.etherBalance.toString())
 
             Text(
                 text = info.ensAddress.toString(),
@@ -62,10 +61,10 @@ fun AccountScreen(
             )
             AsyncImage(
                 model = info.avatar.toString(),
-                contentDescription = null,
+                contentDescription = "profileImage",
                 modifier = Modifier
                     .size(200.dp)
-                    .padding(bottom= 16.dp),
+                    .padding(bottom = 16.dp),
                 contentScale = ContentScale.Crop,
             )
             Row(
