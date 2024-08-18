@@ -36,5 +36,4 @@ class OfflineLocalRepository(
     }
     override suspend fun getEthereumAddress(): Flow<EthereumAddress?> =
         ethereumAddressDao.getEthereumAddress()
-
 }

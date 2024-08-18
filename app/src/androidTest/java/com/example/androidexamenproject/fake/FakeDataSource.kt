@@ -1,9 +1,12 @@
 package com.example.androidexamenproject.fake
 
 import com.example.androidexamenproject.model.DisplayNft
+import com.example.androidexamenproject.model.EthereumAddress
 import com.example.androidexamenproject.model.Image
 import com.example.androidexamenproject.model.NFTContract
 import com.example.androidexamenproject.model.OpenSeaMetadata
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 
 object FakeDataSource {
@@ -36,5 +39,14 @@ object FakeDataSource {
         )
     )
     val fakeNfts = fakeNFTContracts
+
+    val fakeEthereumAddress: Flow<EthereumAddress?> = flow {
+        emit(
+            EthereumAddress(
+                ethAddress = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+                ensAddress = "bonko.eth"
+            )
+        )
+    }
 
 }

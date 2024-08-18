@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "ethereumAddresses")
-data class EthereumAddress (
+open class EthereumAddress (
     @PrimaryKey
     val ethAddress: String,
     val ensAddress: String? = null

@@ -87,6 +87,11 @@ fun NFTsPerCollectionList(
 fun NameAndDescription(
     nfts: List<NftObject>?
 ) {
+    Text(
+        text = "Floor price",
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(top = 8.dp)
+    )
     nfts?.firstOrNull()?.let { firstNft ->
         Box(
             modifier = Modifier

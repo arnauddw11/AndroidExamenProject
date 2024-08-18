@@ -106,7 +106,8 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Button(onClick = {
+                            Button(
+                                onClick = {
                                 sortByHighestFloorPrice = !sortByHighestFloorPrice
                                 sortByLowestFloorPrice = false
                                 filteredCollectionList = filterAndSortCollections(

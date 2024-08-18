@@ -64,8 +64,10 @@ class AlchemyViewModel(
     fun setEthAddress(address: String) {
         viewModelScope.launch {
             try {
+                Log.d("ENS Resolution", "Resolving address: $address")
                 val resolvedAddress = withContext(Dispatchers.IO) { getResolvedAddress(address) }
                 val ensName = withContext(Dispatchers.IO) { getEnsName(address) }
+                Log.d("ENS Resolution", "Resolved address: $resolvedAddress")
                 if (localRepository.getEthereumAddress().equals("")) {
                     localRepository.insertEthereumAddress(EthereumAddress(resolvedAddress, ensName))
                 } else {
@@ -76,6 +78,7 @@ class AlchemyViewModel(
                     _contractsForOwner.value = null
                 }
             } catch (e: IOException) {
+                Log.d("ENS Resolution", "Failed to resolve address", e)
                 e.printStackTrace()
             }
         }
@@ -129,15 +132,19 @@ class AlchemyViewModel(
                 if (contractsForOwner.value.isNullOrEmpty()) {
                     val response = alchemyRepository.getContractsForOwner(address)
                     if (response.isSuccessful) {
-                        val contracts = response.body()?.get("contracts")?.jsonArray
-                        val nftContractsForOwner = Gson().fromJson<List<NFTContract>>(
-                            contracts.toString(),
-                            object : TypeToken<List<NFTContract>>() {}.type
-                        )
+                        // Safely extract the "contracts" array from the JSON response
+                        val contractsJsonArray = response.body()?.get("contracts")?.jsonArray
+                        val nftContractsForOwner = contractsJsonArray?.let {
+                            Gson().fromJson<List<NFTContract>>(
+                                it.toString(),
+                                object : TypeToken<List<NFTContract>>() {}.type
+                            )
+                        } ?: emptyList() // Fallback to an empty list if null
+
                         for (nftContract in nftContractsForOwner) {
                             localRepository.insertContract(nftContract)
                         }
-                        _contractsForOwner.value = nftContractsForOwner
+                        _contractsForOwner.value = nftContractsForOwner.sortedBy { it.openSeaMetadata?.floorPrice }
                     }
                 }
             } catch (e: IOException) {
@@ -145,6 +152,7 @@ class AlchemyViewModel(
             }
         }
     }
+
 
     fun getNFTsForOwner(address: String, contractAddresses: List<String>) {
         viewModelScope.launch {
@@ -167,13 +175,16 @@ class AlchemyViewModel(
     fun computeRarity(contractAddress: String, tokenId: String) {
         viewModelScope.launch {
             try {
+                Log.d("Rarity", "Computing rarity for contract $contractAddress and token $tokenId")
                 val response = alchemyRepository.computeRarity(contractAddress, tokenId)
-                if (response.isSuccessful) {
+                Log.d("Rarity", "Response: $response")
+                if (response !== null && response.isSuccessful) {
                     val raritiesJSON = response.body()?.get("rarities")?.jsonArray
                     val rarities = Gson().fromJson<List<Rarity>>(
                         raritiesJSON.toString(),
                         object : TypeToken<List<Rarity>>() {}.type
                     )
+                    Log.d("Rarity", "Rarities: $rarities")
                     _rarities.value = rarities
                 }
             } catch (e: IOException) {
