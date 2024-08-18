@@ -1,6 +1,9 @@
 package com.example.androidexamenproject.ui
 
 import android.os.Build.VERSION.SDK_INT
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -57,6 +60,12 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessMedium
+                )
+            )
     ) {
         Text(
             text = alchemyViewModel.ethereumAddress.collectAsState().value,

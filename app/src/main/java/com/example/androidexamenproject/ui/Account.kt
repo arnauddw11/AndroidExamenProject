@@ -1,6 +1,6 @@
 package com.example.androidexamenproject.ui
 
-import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.androidexamenproject.ui.viewModel.EthNodeViewModel
-
 @Composable
 fun AccountScreen(
     ethNodeViewModel: EthNodeViewModel
@@ -37,6 +36,7 @@ fun AccountScreen(
             hasFetchedUserInfo.value = true
         }
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,40 +45,46 @@ fun AccountScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Profile", style = MaterialTheme.typography.headlineLarge)
-        userInfo?.let { info ->
-
-            Text(
-                text = info.ensAddress.toString(),
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(bottom =  8.dp),
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = info.resolvedAddress.toString(),
-                style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(bottom= 16.dp),
-                textAlign = TextAlign.Center
-            )
-            AsyncImage(
-                model = info.avatar.toString(),
-                contentDescription = "profileImage",
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(bottom = 16.dp),
-                contentScale = ContentScale.Crop,
-            )
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Balance: ",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                )
-                Text(
-                    text = "${info.etherBalance} ETH",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary)
-                )
+        
+        AnimatedVisibility(visible = userInfo != null) {
+            userInfo?.let { info ->
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = info.ensAddress.toString(),
+                        style = MaterialTheme.typography.headlineLarge,
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = info.resolvedAddress.toString(),
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        textAlign = TextAlign.Center
+                    )
+                    AsyncImage(
+                        model = info.avatar.toString(),
+                        contentDescription = "profileImage",
+                        modifier = Modifier
+                            .size(200.dp)
+                            .padding(bottom = 16.dp),
+                        contentScale = ContentScale.Crop,
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Balance: ",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                        )
+                        Text(
+                            text = "${info.etherBalance} ETH",
+                            style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary)
+                        )
+                    }
+                }
             }
         }
     }
