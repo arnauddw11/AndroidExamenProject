@@ -119,6 +119,8 @@ dependencies {
     androidTestImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
 
+    androidTestImplementation("androidx.test:rules:1.4.0")
+
 
 
 }
