@@ -41,10 +41,10 @@ fun BottomAppBar(navController: NavController, alchemyViewModel: AlchemyViewMode
                     },
             )
             // Check if avatar URL is not null
-            val avatarUrl = alchemyViewModel.ethDetails.collectAsState().value?.avatar.toString()
-            if (avatarUrl != null && avatarUrl != "") {
+            val avatar = alchemyViewModel.ethDetails.collectAsState().value?.avatar
+            if (avatar != null && avatar.toString() != "") {
                 AsyncImage(
-                    model = avatarUrl,
+                    model = avatar.toString(),
                     contentDescription = "Avatar",
                     modifier = Modifier
                         .padding(8.dp)
