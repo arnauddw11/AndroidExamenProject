@@ -5,7 +5,9 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("kotlin-android")
     kotlin("plugin.serialization") version "1.5.0"
+    id("org.jetbrains.dokka") version "1.9.20"
 }
 
 
@@ -93,6 +95,8 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
+    dokkaPlugin("org.jetbrains.dokka:android-documentation-plugin:1.9.20")
+
 
     val nav_version = "2.7.5"
     implementation("androidx.navigation:navigation-compose:$nav_version")

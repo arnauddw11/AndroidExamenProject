@@ -23,15 +23,19 @@ import com.example.androidexamenproject.ui.viewModel.EthNodeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NFTApp() {
+    // Initialize the navigation controller
     val navController: NavHostController = rememberNavController()
 
+    // Initialize the view models for the app
     val alchemyViewModel: AlchemyViewModel = viewModel(factory = AlchemyViewModel.Factory)
     val ethNodeViewModel: EthNodeViewModel = viewModel(factory = EthNodeViewModel.Factory)
     var navigateToCollections by remember { mutableStateOf(false) }
 
+    // Get the current back stack entry to determine the current route
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
+    // Launch a side effect to navigate to the collections screen if an Ethereum address is already set
     LaunchedEffect(key1 = Unit) {
         if (alchemyViewModel.ethereumAddress.value != "") {
             navController.navigate("collections")
@@ -39,6 +43,7 @@ fun NFTApp() {
         alchemyViewModel.getEthereumAddress()
     }
 
+    // Main app scaffold with a conditional bottom bar
     Scaffold(
         bottomBar = {
             if (currentRoute != "home") {
@@ -46,10 +51,12 @@ fun NFTApp() {
             }
         }
     ) { innerPadding ->
+        // Navigation host to manage different screens in the app
         NavHost(
             navController = navController,
             startDestination = "home"
         ) {
+            // Home screen where the user can input their Ethereum address or ENS name
             composable("home") {
                 Box(
                     modifier = Modifier.padding(innerPadding),
@@ -57,6 +64,7 @@ fun NFTApp() {
                     GiveEthereumAddress(navController = navController, alchemyViewModel = alchemyViewModel)
                 }
             }
+            // Screen that displays a list of NFT collections owned by the user
             composable("collections") {
                 Box(
                     modifier = Modifier.padding(innerPadding),
@@ -64,6 +72,7 @@ fun NFTApp() {
                     NftCollectionList(alchemyViewModel = alchemyViewModel, navController = navController)
                 }
             }
+            // Screen that displays NFTs from a selected collection
             composable("nfts") {
                 Box(
                     modifier = Modifier.padding(innerPadding),
@@ -71,6 +80,7 @@ fun NFTApp() {
                     NFTsPerCollectionList(alchemyViewModel = alchemyViewModel, navController = navController)
                 }
             }
+            // Screen that displays the user's account details
             composable("account") {
                 Box(
                     modifier = Modifier.padding(innerPadding),

@@ -48,14 +48,19 @@ import com.example.androidexamenproject.ui.viewModel.AlchemyViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = Modifier, navController: NavController) {
-
+fun NftCollectionList(
+    alchemyViewModel: AlchemyViewModel,
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     var nftCollectionList: List<NFTContract> = alchemyViewModel.contractsForOwner.collectAsState().value ?: listOf()
     var filteredCollectionList by remember { mutableStateOf(nftCollectionList) }
     var filterApplied by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
     var sortByHighestFloorPrice by remember { mutableStateOf(false) }
     var sortByLowestFloorPrice by remember { mutableStateOf(false) }
+
+    // Main layout column
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -67,16 +72,21 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
                 )
             )
     ) {
+        // Display the user's Ethereum address
         Text(
             text = alchemyViewModel.ethereumAddress.collectAsState().value,
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.primary,
         )
+
+        // Header for the NFT collections section
         Text(
             text = "NFT Collections",
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.primary,
         )
+
+        // List of NFT collections with search and sort options
         LazyColumn(
             modifier = modifier,
             verticalArrangement = Arrangement.SpaceBetween,
@@ -86,6 +96,7 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
+                    // Search field for filtering NFT collections
                     TextField(
                         value = searchText,
                         onValueChange = {
@@ -96,8 +107,7 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
                                 sortByHighestFloorPrice,
                                 sortByLowestFloorPrice
                             )
-                            filterApplied =
-                                it.isNotEmpty() || sortByHighestFloorPrice || sortByLowestFloorPrice
+                            filterApplied = it.isNotEmpty() || sortByHighestFloorPrice || sortByLowestFloorPrice
                         },
                         label = { Text("Search Collection") },
                         modifier = Modifier
@@ -105,6 +115,8 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
                             .padding(vertical = 8.dp),
                         singleLine = true,
                     )
+
+                    // Sorting options for the NFT collections
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -145,6 +157,8 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
                     }
                 }
             }
+
+            // Display filtered or original NFT collections
             items(if (filterApplied) filteredCollectionList else nftCollectionList) { nftCollection ->
                 NFTCollectionCard(
                     nftCollection = nftCollection,
@@ -156,7 +170,21 @@ fun NftCollectionList(alchemyViewModel: AlchemyViewModel, modifier: Modifier = M
     }
 }
 
-fun filterAndSortCollections(collections: List<NFTContract>, query: String, sortByHighestFloorPrice: Boolean, sortByLowestFloorPrice: Boolean): List<NFTContract> {
+/**
+ * Filters and sorts a list of NFT collections based on a search query and sorting preferences.
+ *
+ * @param collections The list of NFT collections to filter and sort.
+ * @param query The search query to filter collections by name.
+ * @param sortByHighestFloorPrice Sort by highest floor price if true.
+ * @param sortByLowestFloorPrice Sort by lowest floor price if true.
+ * @return A filtered and sorted list of NFT collections.
+ */
+fun filterAndSortCollections(
+    collections: List<NFTContract>,
+    query: String,
+    sortByHighestFloorPrice: Boolean,
+    sortByLowestFloorPrice: Boolean
+): List<NFTContract> {
     val filteredList = collections.filter { collection ->
         collection.name?.lowercase()?.contains(query.lowercase()) == true
     }
@@ -167,15 +195,21 @@ fun filterAndSortCollections(collections: List<NFTContract>, query: String, sort
     }
 }
 
-
-
-
+/**
+ * Composable that displays a card representing an individual NFT collection.
+ * The card includes the collection name, floor price, and the number of NFTs owned.
+ * Clicking on the card navigates to the screen displaying NFTs in the collection.
+ *
+ * @param nftCollection The NFT collection to display in the card.
+ * @param navController The NavController used for navigation.
+ * @param viewModel The AlchemyViewModel providing NFT data.
+ */
 @Composable
 fun NFTCollectionCard(
     nftCollection: NFTContract,
     navController: NavController,
     viewModel: AlchemyViewModel
-){
+) {
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .components {
             if (SDK_INT >= 28) {
@@ -191,7 +225,7 @@ fun NFTCollectionCard(
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                viewModel.setCollectionContractAddress(nftCollection?.address ?: "")
+                viewModel.setCollectionContractAddress(nftCollection.address ?: "")
                 navController.navigate("nfts")
             },
         shape = RoundedCornerShape(4.dp)
@@ -204,11 +238,11 @@ fun NFTCollectionCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(text = nftCollection?.openSeaMetadata?.collectionName ?: "Missing collection name")
+                Text(text = nftCollection.openSeaMetadata?.collectionName ?: "Missing collection name")
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Floor Price: ${nftCollection?.openSeaMetadata?.floorPrice?.toString() ?: ""}")
+                    Text(text = "Floor Price: ${nftCollection.openSeaMetadata?.floorPrice?.toString() ?: ""}")
                     Spacer(modifier = Modifier.width(4.dp))
                     Image(
                         painter = painterResource(id = R.drawable.ethlogo),
@@ -218,22 +252,16 @@ fun NFTCollectionCard(
                             .size(15.dp)
                     )
                 }
-                Text(text = "Amount owned: " + nftCollection?.numDistinctTokensOwned.toString())
+                Text(text = "Amount owned: " + nftCollection.numDistinctTokensOwned.toString())
             }
             AsyncImage(
-                model = nftCollection?.openSeaMetadata?.imageUrl ?: "",
-                contentDescription = nftCollection?.openSeaMetadata?.description ?: "",
+                model = nftCollection.openSeaMetadata?.imageUrl ?: "",
+                contentDescription = nftCollection.openSeaMetadata?.description ?: "",
                 modifier = Modifier
                     .size(60.dp)
-                    .clip(
-                        RoundedCornerShape(4.dp)
-                    ),
+                    .clip(RoundedCornerShape(4.dp)),
                 imageLoader = imageLoader
             )
         }
     }
 }
-
-
-
-

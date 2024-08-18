@@ -35,12 +35,19 @@ fun GiveEthereumAddress(navController: NavController, alchemyViewModel: AlchemyV
     var ethereumAddress by remember { mutableStateOf("") }
     var isValidAddress by remember { mutableStateOf(true) }
 
+    /**
+     * Validates if the input string is a valid Ethereum address or ENS name.
+     *
+     * @param address The input address string to validate.
+     * @return True if the address is a valid Ethereum address or ENS name, false otherwise.
+     */
     fun validateEthereumAddress(address: String): Boolean {
         val ethAddressRegex = "^0x[a-fA-F0-9]{40}\$".toRegex()
         val ensAddressRegex = "^[a-zA-Z0-9-]+\\.eth\$".toRegex()
         return ethAddressRegex.matches(address) || ensAddressRegex.matches(address)
     }
 
+    // UI layout of the screen
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,14 +55,17 @@ fun GiveEthereumAddress(navController: NavController, alchemyViewModel: AlchemyV
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Title text for the screen
         Text(
             text = "NFT Gallery",
-            style = MaterialTheme.typography.headlineLarge .copy(
+            style = MaterialTheme.typography.headlineLarge.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp
             )
         )
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Subtitle text for instructions
         Text(
             text = "Enter your Ethereum address or ENS name to view your NFTs",
             color = Color.Gray,
@@ -64,6 +74,8 @@ fun GiveEthereumAddress(navController: NavController, alchemyViewModel: AlchemyV
             )
         )
         Spacer(modifier = Modifier.height(24.dp))
+
+        // TextField for entering Ethereum address or ENS name
         TextField(
             value = ethereumAddress,
             onValueChange = {
@@ -82,6 +94,8 @@ fun GiveEthereumAddress(navController: NavController, alchemyViewModel: AlchemyV
             modifier = Modifier
                 .fillMaxWidth()
         )
+
+        // Error message for invalid input
         if (!isValidAddress) {
             Text(
                 text = "Invalid Ethereum address or ENS name",
@@ -90,6 +104,8 @@ fun GiveEthereumAddress(navController: NavController, alchemyViewModel: AlchemyV
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Button to initiate the process of fetching NFTs
         Button(
             onClick = {
                 alchemyViewModel.setEthAddress(ethereumAddress)

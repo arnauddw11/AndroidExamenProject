@@ -32,14 +32,26 @@ import java.text.DecimalFormat
 
 
 
+/**
+ * ViewModel for managing Ethereum-related user information, including balance, ENS avatars, and NFT metadata.
+ *
+ * @param ethereumRPC The Ethereum RPC client for interacting with the Ethereum blockchain.
+ * @param localRepository The repository for local data storage and retrieval.
+ * @param alchemyRepository The repository for interacting with the Alchemy API.
+ */
 class EthNodeViewModel(
     private val ethereumRPC: EthereumRPC,
     private val localRepository: LocalRepository,
     private val alchemyRepository: AlchemyRepository
 ) : ViewModel() {
+
+    // Holds the user information including ENS name, Ethereum address, balance, and avatar.
     private val _userInfo = MutableStateFlow<UserInfo?>(null)
     val userInfo: StateFlow<UserInfo?> get() = _userInfo
 
+    /**
+     * Retrieves the user information, including Ethereum balance, ENS avatar, and stores it in the local repository.
+     */
     fun getUserInfo() {
         viewModelScope.launch {
             try {
@@ -47,19 +59,30 @@ class EthNodeViewModel(
                     val ethAddress = localRepository.getEthereumAddress().firstOrNull()
                     ethAddress?.let { address ->
 
-                        var balance = ethereumRPC.getBalance(Address(address.ethAddress), "latest")
+                        val balance = ethereumRPC.getBalance(Address(address.ethAddress), "latest")
 
                         val avatar = getAvatar(address)
                         localRepository.insertAvatar(address.ethAddress, avatar)
-                        _userInfo.value = UserInfo(address.ensAddress, address.ethAddress, formatBalance(balance as BigInteger), avatar)
+                        _userInfo.value = UserInfo(
+                            address.ensAddress,
+                            address.ethAddress,
+                            formatBalance(balance as BigInteger),
+                            avatar
+                        )
                     }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         }
     }
+
+    /**
+     * Formats the Ethereum balance from Wei to Ether and rounds it to two decimal places.
+     *
+     * @param balance The balance in Wei as a BigInteger.
+     * @return The formatted balance in Ether as a Double.
+     */
     private fun formatBalance(balance: BigInteger): Double {
         val gweiInEther = BigInteger("1000000000") // 10^9
         val etherValue = balance.toDouble() / gweiInEther.toDouble()
@@ -68,6 +91,12 @@ class EthNodeViewModel(
         return df.format(etherValue).toDouble()
     }
 
+    /**
+     * Retrieves the ENS avatar URL for the given Ethereum address, resolving IPFS or EIP-155 based avatars.
+     *
+     * @param address The Ethereum address object containing the ENS name.
+     * @return The resolved avatar URL as a String.
+     */
     private suspend fun getAvatar(address: EthereumAddress): String {
         val ens = ENS(ethereumRPC)
         val avatar = ens.getAvatar(ENSName(address.ensAddress.toString())).toString()
@@ -112,13 +141,19 @@ class EthNodeViewModel(
         }
     }
 
-
     companion object {
+        /**
+         * Factory for creating an instance of EthNodeViewModel.
+         */
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as NFTApplication)
                 val localRepository = application.container.localRepository
-                EthNodeViewModel(application.container.ethereumRPC, localRepository, application.container.alchemyRepository)
+                EthNodeViewModel(
+                    application.container.ethereumRPC,
+                    localRepository,
+                    application.container.alchemyRepository
+                )
             }
         }
     }

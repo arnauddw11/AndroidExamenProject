@@ -51,11 +51,16 @@ fun NFTsPerCollectionList(
     var gridColumns by remember { mutableStateOf(1) }
     val nfts = alchemyViewModel.nftsForOwner.value
 
+    // Load NFTs for the selected collection on initial composition
     LaunchedEffect(nfts) {
-        alchemyViewModel.getNFTsForOwner(alchemyViewModel.ethereumAddress.value, listOf(alchemyViewModel.collectionContractAddress.value))
+        alchemyViewModel.getNFTsForOwner(
+            alchemyViewModel.ethereumAddress.value,
+            listOf(alchemyViewModel.collectionContractAddress.value)
+        )
     }
 
     Column {
+        // Toggle between list and grid view by clicking the icon
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -63,13 +68,12 @@ fun NFTsPerCollectionList(
         ) {
             Icon(
                 Icons.Default.List,
-                contentDescription = "change view",
+                contentDescription = "Change view",
                 modifier = Modifier.align(Alignment.Center)
             )
         }
 
-
-
+        // Display NFTs in a grid, with a dynamic number of columns
         LazyVerticalGrid(
             columns = GridCells.Fixed(gridColumns),
         ) {
@@ -83,6 +87,11 @@ fun NFTsPerCollectionList(
     }
 }
 
+/**
+ * Displays the name, description, and floor price of the NFT collection.
+ *
+ * @param nfts The list of NFTs to display information about.
+ */
 @Composable
 fun NameAndDescription(
     nfts: List<NftObject>?
@@ -100,12 +109,14 @@ fun NameAndDescription(
                     text = firstNft.collection?.name ?: "No name available",
                     style = androidx.compose.ui.text.TextStyle(
                         fontSize = 30.sp,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                        fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier.padding(bottom = 3.dp)
                 )
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(start = 30.dp, end = 30.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 30.dp, end = 30.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
@@ -114,19 +125,19 @@ fun NameAndDescription(
                         modifier = Modifier.padding(top = 8.dp)
                     )
                     Text(
-                        text = firstNft?.contract?.openSeaMetadata?.floorPrice?.toString()?.let { "  $it ETH" } ?: "No floor price available",
+                        text = firstNft.contract?.openSeaMetadata?.floorPrice?.toString()?.let { "  $it ETH" }
+                            ?: "No floor price available",
                         modifier = Modifier.padding(top = 8.dp, bottom = 10.dp)
                     )
                 }
                 Text(
                     text = firstNft.description ?: "No description available"
                 )
-
             }
-
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NFTCard(
@@ -145,6 +156,7 @@ fun NFTCard(
         .build()
     var isImageClicked by remember { mutableStateOf(false) }
 
+    // Show a dialog with the NFT image when clicked
     if (isImageClicked) {
         Dialog(onDismissRequest = { isImageClicked = false }) {
             Box(
@@ -192,7 +204,12 @@ fun NFTCard(
     }
 }
 
-
+/**
+ * Displays additional details about the NFT, including rarity information.
+ *
+ * @param nft The NFT object to display details for.
+ * @param alchemyViewModel The view model providing NFT data and rarity computation.
+ */
 @Composable
 fun NFTDetails(
     nft: NftObject?,
@@ -200,6 +217,7 @@ fun NFTDetails(
 ) {
     val rarities = alchemyViewModel.rarities.collectAsState().value
 
+    // Compute and display rarity when the NFT details are shown
     LaunchedEffect(rarities) {
         alchemyViewModel.computeRarity(nft?.contract?.address.toString(), nft?.tokenId.toString())
     }
@@ -220,6 +238,11 @@ fun NFTDetails(
     }
 }
 
+/**
+ * Displays a badge showing the trait type and rarity percentage of a specific trait.
+ *
+ * @param rarity The Rarity object containing the trait and prevalence data.
+ */
 @Composable
 fun RarityBadge(rarity: Rarity) {
     Surface(
@@ -246,5 +269,10 @@ fun RarityBadge(rarity: Rarity) {
     }
 }
 
-// Extension function to format double to 2 decimal places
+/**
+ * Extension function to format a Double to a specified number of decimal places.
+ *
+ * @param digits The number of decimal places to format the Double to.
+ * @return The formatted Double as a String.
+ */
 fun Double.format(digits: Int) = "%.${digits}f".format(this)
