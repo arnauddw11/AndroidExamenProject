@@ -195,7 +195,7 @@ fun NFTCollectionCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(text = nftCollection?.name ?: "Missing collection name")
+                Text(text = nftCollection?.openSeaMetadata?.collectionName ?: "Missing collection name")
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {

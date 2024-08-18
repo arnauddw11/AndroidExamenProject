@@ -7,5 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "ethereumAddresses")
 data class EthereumAddress (
     @PrimaryKey
-    val ethAddress: String
+    val ethAddress: String,
+    val ensAddress: String? = null,
+    val avatar: String? = null
 )

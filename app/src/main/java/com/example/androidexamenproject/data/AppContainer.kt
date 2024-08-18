@@ -5,28 +5,30 @@ import com.example.androidexamenproject.network.ApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.logging.HttpLoggingInterceptor
+import org.kethereum.rpc.EthereumRPC
+import org.kethereum.rpc.HttpEthereumRPC
 import retrofit2.Retrofit
+
 
 
 interface AppContainer {
     val alchemyRepository: AlchemyRepository
     val localRepository: LocalRepository
+    val ethereumRPC: EthereumRPC
 }
 
 class DefaultAppContainer(context: Context) : AppContainer {
 
-    private val BASE_URL = "https://eth-mainnet.g.alchemy.com/nft/v3//"
+    private val BASE_URL = "https://eth-mainnet.g.alchemy.com/nft/v3/XDJKhrYm6fHJodk3E0sXUOt_YpgePsdO/"
+    private val ETH_NODE_URL = "https://eth-mainnet.g.alchemy.com/v2/XDJKhrYm6fHJodk3E0sXUOt_YpgePsdO"
 
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
 
     private val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(BASE_URL)
         .build()
 
+    override val ethereumRPC: EthereumRPC = HttpEthereumRPC(ETH_NODE_URL)
 
     private val alchemyRetrofitService: ApiService by lazy {
         retrofit.create(ApiService::class.java)

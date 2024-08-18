@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.Flow
 interface LocalRepository {
     suspend fun insertContract(nftContracts: NFTContract)
     suspend fun insertEthereumAddress(ethereumAddress: EthereumAddress)
+    suspend fun insertAvatar(ethAddress: String, avatar: String)
+    suspend fun getAvatar(): Flow<String?>
     suspend fun clearEthereumAddressTable()
     suspend fun getEthereumAddress(): Flow<EthereumAddress?>
     suspend fun clearContractsTable()
@@ -30,6 +32,13 @@ class OfflineLocalRepository(
     override suspend fun insertEthereumAddress(ethereumAddress: EthereumAddress) {
         ethereumAddressDao.insertAddress(ethereumAddress)
     }
+
+    override suspend fun insertAvatar(ethAddress: String, avatar: String) {
+        ethereumAddressDao.updateAvatar(ethAddress, avatar)
+    }
+
+    override suspend fun getAvatar(): Flow<String?> =
+        ethereumAddressDao.getAvatar()
 
     override suspend fun clearEthereumAddressTable() {
         ethereumAddressDao.clearAddressTable()

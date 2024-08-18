@@ -5,7 +5,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
-
+    kotlin("plugin.serialization") version "1.5.0"
 }
 
 
@@ -23,6 +23,17 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    packaging {
+        resources {
+            // Exclude the LICENSE.md files to prevent conflicts
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/NOTICE.md"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/LICENSE-notice.md"
         }
     }
 
@@ -57,7 +68,17 @@ android {
 }
 
 dependencies {
-
+    implementation("com.github.komputing:kethereum:0.86.0") {
+        exclude(group = "com.github.komputing.kethereum", module = "bip39_wordlist_es")
+        exclude(group = "com.github.komputing.kethereum", module = "bip39_wordlist_fr")
+        exclude(group = "com.github.komputing.kethereum", module = "bip39_wordlist_it")
+        exclude(group = "com.github.komputing.kethereum", module = "bip39_wordlist_ja")
+        exclude(group = "com.github.komputing.kethereum", module = "bip39_wordlist_ko")
+        exclude(group = "com.github.komputing.kethereum", module = "bip39_wordlist_zh-Hans")
+        exclude(group = "com.github.komputing.kethereum", module = "bip39_wordlist_zh-Hant")
+        exclude(group = "com.github.komputing.kethereum", module = "crypto_impl_bouncycastle")
+        exclude(group = "com.github.komputing.kethereum", module = "crypto_impl_spongycastle")
+    }
     implementation("androidx.core:core-ktx:1.12.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -72,11 +93,16 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
-    implementation("androidx.navigation:navigation-compose:2.7.5")
+
+    val nav_version = "2.7.5"
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+    androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
+
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation("io.coil-kt:coil-gif:2.5.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
+    implementation("androidx.media3:media3-common:1.3.1")
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
@@ -86,4 +112,13 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    androidTestImplementation("org.mockito:mockito-android:4.0.0")
+    androidTestImplementation("io.mockk:mockk:1.13.2")
+    androidTestImplementation("io.mockk:mockk-android:1.13.2")
+    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
+
+
+
 }

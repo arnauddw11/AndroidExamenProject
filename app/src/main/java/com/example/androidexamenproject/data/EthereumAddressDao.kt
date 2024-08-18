@@ -19,4 +19,9 @@ interface EthereumAddressDao{
     @Query("DELETE FROM ethereumAddresses")
     suspend fun clearAddressTable()
 
+    @Query("UPDATE ethereumAddresses SET avatar = :avatar WHERE ethAddress = :ethAddress")
+    suspend fun updateAvatar(ethAddress: String, avatar: String)
+
+    @Query("SELECT avatar FROM ethereumAddresses LIMIT 1")
+    fun getAvatar(): Flow<String?>
 }
